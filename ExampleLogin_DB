@@ -1,0 +1,46 @@
+USE [master]
+Go
+
+CREATE DATABASE [BD_RH_SYSTEM]
+Go
+
+USE BD_RH_SYSTEM
+Go
+
+CREATE TABLE USERS_DB
+(
+ [Id_User] int PRIMARY KEY identity(1,1),
+ [Name_User] varchar(25) NOT NULL,
+ [UserName] varchar(50) NOT NULL,
+ [Password] varchar(50) NOT NULL
+)
+Go
+
+-- | STORED PROCEDURES USERS | --
+
+CREATE PROC SP_SHOW_USER_DATA 
+  @UserName varchar(50) AS
+   BEGIN
+    Select USERS_DB.UserName, USERS_DB.Name_User, USERS_DB.[Password] FROM USERS_DB where USERS_DB.UserName = @UserName
+   END
+Go
+
+CREATE PROC SP_LOGIN_SYSTEM 
+ @UserName varchar(50), @Password varchar(50) AS
+  BEGIN
+  if (not exists (SELECT * FROM USERS_DB WHERE [UserName] = @UserName))
+	  RETURN -2 -- USER NOT REGISTERED --
+  else if (not((SELECT [Password] FROM USERS_DB WHERE [UserName] = @UserName) = @Password))
+	 RETURN -3 -- WRONG PASSWORD --
+    else
+	 SELECT * FROM USERS_DB WHERE [UserName] = @UserName and [Password] = @Password    
+ END
+Go
+
+-- (SHOWS A LIST OF USERS)
+SELECT * FROM USERS_DB
+GO
+
+
+ 
+
